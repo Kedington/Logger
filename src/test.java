@@ -5,7 +5,6 @@ import java.io.IOException;
  */
 public class test {
     public static void main(String[] args) throws IOException {
-        Logger.setFileName("wow.txt");
-        Logger.writeToTextFile("Write Something");
+        Logger.writeToTextFile('e', "Write Something");
     }
 }

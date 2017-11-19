@@ -1,7 +1,6 @@
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 /**
  * Logger manages incoming logs from users and writes them to a specified text file
@@ -17,9 +16,12 @@ public class Logger {
         Logger.fileName = fileName;
     }
 
-    public static void writeToTextFile(String content) {
+    public static void writeToTextFile(char tag, String content) {
         try {
-            Files.write(Paths.get(Logger.fileName), content.getBytes(), StandardOpenOption.CREATE);
+
+            String msg = Long.toString(System.currentTimeMillis()) + " " + tag + " " + content + '\n';
+            FileOutputStream out = new FileOutputStream(fileName, true);
+            out.write(msg.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
