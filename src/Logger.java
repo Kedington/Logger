@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -17,6 +16,8 @@ public class Logger {
         Logger.fileName = fileName;
     }
 
+    static Encoder encode = new Encoder();
+
     /**
      * Extract the class name of the method that called the logger and the time.
      * Add the Message to the buffer to be written to the file.
@@ -25,10 +26,14 @@ public class Logger {
      */
     public static void writeToTextFile(char tag, String content) {
         try {
+            // Costly operation may want to change
             String className = new Exception().getStackTrace()[1].getClassName();
+            long currentTime = System.currentTimeMillis();
             String msg = Long.toString(System.currentTimeMillis()) + " " + tag + " " + content + " " + className + '\n';
             FileOutputStream out = new FileOutputStream(fileName, true);
             out.write(msg.getBytes());
+            encode.addMessage(className, content);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
