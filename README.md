@@ -18,6 +18,11 @@ Downfalls of this Logger
     Limited to 127 unique log messages, 127 unique class names and
     2 different serverities with current implementation.
     
+Decoding 
+    
+    Works By Using two key files with mappings from Log messages and class names to 
+    a byte. 
+    
     
     
     
