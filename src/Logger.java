@@ -6,6 +6,7 @@ import java.io.IOException;
  * Logger manages incoming logs from users and writes them to a specified text file
  */
 public class Logger {
+
     private static String fileName = "default.txt";
 
     public static String getFileName() {
@@ -18,8 +19,9 @@ public class Logger {
 
     public static void writeToTextFile(char tag, String content) {
         try {
+            String className = new Exception().getStackTrace()[1].getClassName();
 
-            String msg = Long.toString(System.currentTimeMillis()) + " " + tag + " " + content + '\n';
+            String msg = Long.toString(System.currentTimeMillis()) + " " + tag + " " + content + " " + className + '\n';
             FileOutputStream out = new FileOutputStream(fileName, true);
             out.write(msg.getBytes());
         } catch (IOException e) {
