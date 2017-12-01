@@ -8,6 +8,8 @@ import java.util.Map;
  */
 public class Encoder {
 
+    private static String encodedfile = "default.txt";
+
     private final String classNameKey = "ClassNameKey.txt";
     private final String logContentKey = "LogContentKey.txt";
 
@@ -18,8 +20,8 @@ public class Encoder {
     private BufferedWriter logWriter;
 
     // Used to Keep track of the current class names and log contents
-    private Map<String, String> classNamesMap = new HashMap<String, String>(256);
-    private Map<String, String> logContentsMap = new HashMap<String, String>(256);
+    private Map<String, String> classNamesMap = new HashMap<>(127);
+    private Map<String, String> logContentsMap = new HashMap<>(127);
 
     private long startTime = 0;
 
@@ -38,8 +40,8 @@ public class Encoder {
 
         }
         try {
-            classWriter = new BufferedWriter(new FileWriter(classKey));
-            logWriter = new BufferedWriter(new FileWriter(logKey));
+            classWriter = new BufferedWriter(new FileWriter(classKey, true));
+            logWriter = new BufferedWriter(new FileWriter(logKey, true));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,21 +80,40 @@ public class Encoder {
      * @return                  true if successfully written
      * @throws IOException
      */
-    public boolean addMessage(String className, String content) throws IOException {
+    public boolean addMapping(String className, String content, boolean errorFlag) throws IOException {
         if (!classNamesMap.containsKey(className)) {
-            classWriter.write(Integer.toString(classNamesMap.size()) + "-" + className + "\n");
-            classNamesMap.put(className, Integer.toString(classNamesMap.size()));
+            classWriter.write(Integer.toString(classNamesMap.size()+1) + "-" + className + "\n");
+            classNamesMap.put(className, Integer.toString(classNamesMap.size()+1));
+            classWriter.flush();
         }
 
         if (!logContentsMap.containsKey(content)) {
             logWriter.write(Integer.toString(logContentsMap.size()) + "-" + content + "\n");
             logContentsMap.put(className, Integer.toString(logContentsMap.size()));
+            logWriter.flush();
         }
 
-        System.out.println(" " + classNamesMap.size());
-        System.out.println(" " + logContentsMap.size());
+        byte classMapping = Byte.valueOf(classNamesMap.get(className));
+        if (errorFlag)
+            classMapping = (byte) -classMapping;
+
+        addEncodedLog(classMapping, Byte.valueOf(logContentsMap.get(content)));
+
         classWriter.flush();
         logWriter.flush();
         return true;
     }
+
+    /**
+     * Writes to the Encoding file
+     * @param classMapping      The byte representation for the class
+     * @param contentMapping    The byte representation for the log message
+     * @throws IOException
+     */
+    public void addEncodedLog(byte classMapping, byte contentMapping) throws IOException {
+        FileOutputStream out = new FileOutputStream(encodedfile, true);
+        out.write(classMapping);
+        out.write(contentMapping);
+    }
 }
+

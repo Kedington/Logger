@@ -1,0 +1,2 @@
+0-The User has been added
+1-The query timed out

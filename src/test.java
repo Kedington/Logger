@@ -5,6 +5,9 @@ import java.io.IOException;
  */
 public class test {
     public static void main(String[] args) throws IOException {
-        Logger.writeToTextFile('e', "Write Something");
+        Logger.standard("The User has been added");
+        Logger.error("The query timed out");
+        Decoder decode = new Decoder();
+        decode.decodeLogs();
     }
 }
