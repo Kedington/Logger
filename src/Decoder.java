@@ -65,16 +65,22 @@ public class Decoder {
         try {
             FileInputStream in = new FileInputStream(encodedfile);
             int bytes;
+            String className = "";
+            PrintStream out = System.out;
             while ((bytes = in.read()) != -1) {
-                System.out.println(bytes);
                 if (flag) {
-                    if (bytes > 127)
-                        System.err.println(classNamesMap.get(Byte.toString((byte) (bytes - 254))));
-                    else
-                        System.out.println(classNamesMap.get(Byte.toString((byte) bytes)));
+                    if (bytes > 127) {
+                        className = classNamesMap.get(Byte.toString((byte) (bytes-254)));
+                        out = System.err;
+                    }
+                    else {
+                        className = classNamesMap.get(Byte.toString(((byte) bytes)));
+                        out = System.out;
+                    }
                 }
-                else
-                    System.out.println(logContentsMap.get(Byte.toString((byte) bytes )));
+                else {
+                    out.println("Class Name: " + className + " Log: " +  logContentsMap.get(Byte.toString((byte) bytes)));
+                }
 
                 flag = !flag;
 
